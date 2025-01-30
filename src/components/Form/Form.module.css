@@ -13,6 +13,7 @@
     font-size: 1.8rem;
     font-weight: 400;
     border-radius: 1rem;
+    appearance: none;
     
 }
 
@@ -30,4 +31,8 @@
     cursor: pointer;
     padding: 1.4rem;
     border-radius: 1rem;
+}
+
+.form select option {
+    color: black; /* Texto blanco */
 }
