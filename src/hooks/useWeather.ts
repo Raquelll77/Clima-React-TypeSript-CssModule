@@ -1,5 +1,6 @@
 import axios from "axios"
-import {z} from "zod"
+/* import {z} from "zod" */
+import {object, string, number, InferOutput, parse} from "valibot"
 import { SearchType } from "../types"
 
 /* function isWeatherResponse(weather : unknown) : weather is Weather{
@@ -15,7 +16,7 @@ import { SearchType } from "../types"
 } */
 
 //Zod
-const Weather = z.object({
+/* const Weather = z.object({
     name: z.string(),
     main: z.object({
         temp: z.number(),
@@ -24,7 +25,19 @@ const Weather = z.object({
     })
 })
 
-type Weather = z.infer<typeof Weather>
+type Weather = z.infer<typeof Weather> */
+
+//VALIBOT
+const WeatherSchema = object({
+    name: string(),
+    main: object({
+        temp: number(),
+        temp_max: number(),
+        temp_min: number()
+    })
+})
+
+type Weather = InferOutput<typeof WeatherSchema>
 
 export default function useWeather(){
 
@@ -55,12 +68,21 @@ export default function useWeather(){
             } */
 
             // Zod
-            const {data: weatherResult} = await axios<Weather>(weatherUrl)
+            /* const {data: weatherResult} = await axios<Weather>(weatherUrl)
             const result = Weather.safeParse(weatherResult)
             
             if(result.success){
                 console.log(result.data.name)
+            } */
+
+            //VALIBOT
+            const {data: weatherResult} = await axios<Weather>(weatherUrl)
+            const result = parse(WeatherSchema, weatherResult)
+            
+            if(result){
+                console.log(result.name)
             }
+            
 
         } catch (error) {
             console.log(error)        
