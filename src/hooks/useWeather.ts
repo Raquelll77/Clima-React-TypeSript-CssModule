@@ -2,7 +2,7 @@ import axios from "axios"
 import {z} from "zod" 
 /* import {object, string, number, InferOutput, parse} from "valibot" */
 import { SearchType } from "../types"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 
 /* function isWeatherResponse(weather : unknown) : weather is Weather{
     return(
@@ -52,9 +52,12 @@ export default function useWeather(){
         }
     })
 
+    const [loading, setLoading] = useState(false)
+
     const fetchWeather = async (search : SearchType) => {
 
         const appId = import.meta.env.VITE_API_KEY
+        setLoading(true)
         try {
             const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${search.city},${search.country}&appid=${appId}`
             
@@ -91,18 +94,24 @@ export default function useWeather(){
             const result = Weather.safeParse(weatherResult)
             
             if(result.success){
-                setWeather(result.data)
+                setWeather(result.data)            
             } 
             
 
         } catch (error) {
             console.log(error)        
+        } finally {
+            setLoading(false)
         }
 
     }
 
+    const hasWeatherData = useMemo(()=> weather.name, [weather])
+
     return{
         weather,
-        fetchWeather
+        loading,
+        fetchWeather,
+        hasWeatherData
     }
 }
