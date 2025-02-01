@@ -51,10 +51,11 @@ export default function useWeather(){
           temp_min: 0  
         }
     }
-
-    const [weather, setWeather] = useState<Weather>(initialState)
-    const [loading, setLoading] = useState(false)
     const [notFound, setNotFound] = useState(false)
+    const [weather, setWeather] = useState<Weather>(initialState)
+    
+    const [loading, setLoading] = useState(false)
+    
 
     const fetchWeather = async (search : SearchType) => {
 
@@ -70,6 +71,8 @@ export default function useWeather(){
                 setNotFound(true)
                 return
             }
+
+            setNotFound(false) 
             
             const lat = data[0].lat
             const lon = data[0].lon
